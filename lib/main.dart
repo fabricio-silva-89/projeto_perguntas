@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_perguntas/questionario.dart';
 
-import 'questao.dart';
-import 'resposta.dart';
+import 'resultado.dart';
 
 void main() {
   runApp(PerguntaApp());
@@ -14,28 +14,52 @@ class PerguntaApp extends StatefulWidget {
 
 class _PerguntaAppState extends State<PerguntaApp> {
   var _perguntaSelecionada = 0;
+  var _pontuacaoTotal = 0;
 
   final _perguntas = const [
     {
       "texto": "Qual é a sua cor favorita",
-      "respostas": ["Preto", "Vermelho", "Verde", "Branco"],
+      "respostas": [
+        {"texto": "Preto", "nota": 10},
+        {"texto": "Vermelho", "nota": 5},
+        {"texto": "Verde", "nota": 3},
+        {"texto": "Branco", "nota": 1},
+      ],
     },
     {
       "texto": "Qual é o seu animal favorito",
-      "respostas": ["Coelho", "Cobra", "Elefante", "Leão"],
+      "respostas": [
+        {"texto": "Coelho", "nota": 10},
+        {"texto": "Cobra", "nota": 5},
+        {"texto": "Elefante", "nota": 3},
+        {"texto": "Leão", "nota": 1},
+      ],
     },
     {
       "texto": "Qual é o seu instrutor favorito?",
-      "respostas": ["Maria", "João", "Leo", "Pedro"],
+      "respostas": [
+        {"texto": "Maria", "nota": 10},
+        {"texto": "João", "nota": 5},
+        {"texto": "Leo", "nota": 3},
+        {"texto": "Pedro", "nota": 1},
+      ],
     },
   ];
 
-  void _responder() {
+  void _responder(int pontuacao) {
     if (temPerguntaSelecionada) {
       setState(() {
         _perguntaSelecionada++;
+        _pontuacaoTotal += pontuacao;
       });
     }
+  }
+
+  void _reiniciar() {
+    setState(() {
+      _perguntaSelecionada = 0;
+      _pontuacaoTotal = 0;
+    });
   }
 
   bool get temPerguntaSelecionada {
@@ -44,31 +68,20 @@ class _PerguntaAppState extends State<PerguntaApp> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> respostas = temPerguntaSelecionada
-        ? _perguntas[_perguntaSelecionada].cast()['respostas']
-        : [];
-
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text("Perguntas"),
         ),
         body: temPerguntaSelecionada
-            ? Column(
-                children: [
-                  Questao(
-                      texto:
-                          _perguntas[_perguntaSelecionada]["texto"].toString()),
-                  ...respostas
-                      .map((e) => Resposta(texto: e, onPressed: _responder))
-                      .toList(),
-                ],
+            ? Questionario(
+                perguntas: _perguntas,
+                perguntaSelecionada: _perguntaSelecionada,
+                quantoResponder: _responder,
               )
-            : Center(
-                child: Text(
-                  "Parabéns!!!",
-                  style: TextStyle(fontSize: 28),
-                ),
+            : Resultado(
+                pontuacao: _pontuacaoTotal,
+                reiniciar: _reiniciar,
               ),
       ),
     );

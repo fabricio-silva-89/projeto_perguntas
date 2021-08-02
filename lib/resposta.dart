@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Resposta extends StatelessWidget {
   final String texto;
-  final VoidCallback onPressed;
+  final void Function() onPressed;
 
   const Resposta({
     Key? key,
